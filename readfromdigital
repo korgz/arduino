@@ -1,0 +1,58 @@
+
+const byte button = 8;
+const byte buttonPull = 7;
+const byte ledPull = 12;
+
+void setup()
+{
+  Serial.begin(9600);
+  
+  pinMode(LED_BUILTIN, OUTPUT);
+  pinMode(ledPull, OUTPUT);
+  
+  pinMode(button, INPUT);            // Digital IN
+  pinMode(buttonPull, INPUT_PULLUP); // Digital IN ar iebuveto PULLUP rezistoru
+  
+}
+
+bool ledState = false; // tas pats ka 0
+bool buttonPressed = false;
+
+void loop()
+{
+  bool buttonState = digitalRead(button); //apgriesana, 
+  bool buttonPullState = !digitalRead(buttonPull); //vai ir nospiests vai nav nospiests
+  
+  
+  Serial.println(
+      "pin8: "
+    + String(buttonState)
+    + "\tpin7: "
+    + String(buttonPullState)
+  );
+  
+  
+  // LED1 darbojas kamer poga ir pospiesta
+  //if (buttonState == true) { // 1 vai 0
+  //  digitalWrite(LED_BUILTIN, HIGH); // HIGH == 1 | LOW == 0
+  //} else {
+  //  digitalWrite(LED_BUILTIN, LOW);
+  //}
+  digitalWrite(LED_BUILTIN, buttonState);
+  
+  
+  // LED2 maina stavokli no pogas nospiesanas
+  if (buttonPullState && !buttonPressed) {
+    buttonPressed = true;
+    ledState = !ledState; // ir vienads ar to pasu, tikai apgreiztu
+    digitalWrite(ledPull, ledState);
+  }
+  // else if (!buttonPullState) { // poga vairs nav nospiesta
+  //  buttonPressed = false;
+  //}
+  buttonPressed = buttonPullState;
+  
+  
+  delay(50); // Prieks simulacijas labakas darbibas
+  
+}
